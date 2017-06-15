@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <style type="text/css">
+        .table{
+            width : 250px;
+            height : 250px;
+            border : solid 3px black;
+            border-collapse: collapse;
+        }
+        .td{
+            border : solid 3px black;
+            width : 33%;
+            height : 33%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <title>Morpion</title>
+</head>
+<body>
+    <table class="table" align="center">
+        <tr>
+            <td class="td case" id="00">&nbsp;</td>
+            <td class="td case" id="01">&nbsp;</td>
+            <td class="td case" id="02">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="td case" id="10">&nbsp;</td>
+            <td class="td case" id="11">&nbsp;</td>
+            <td class="td case" id="12">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="td case" id="20">&nbsp;</td>
+            <td class="td case" id="21">&nbsp;</td>
+            <td class="td case" id="22">&nbsp;</td>
+        </tr>
+    </table>
+    <div id="info" style="text-align : center;">Au joueur 1 de jouer.<br /></div><br /><br />
+    <script type="application/javascript" src="algo_tic_tac_toe.js"></script>
+</body>
+</html>
