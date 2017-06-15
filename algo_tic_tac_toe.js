@@ -215,7 +215,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
 
 
             //bestValue = Math.max(bestValue, childValue);
-            if (childValue > bestValue) {
+            if (childValue > bestValue || (Math.floor((Math.random() * 100) + 1) > 50 && childValue == bestValue)) {
                 bestValue = childValue;
                 bestL = coupsPossible[i][0];
                 bestC = coupsPossible[i][1];
@@ -239,7 +239,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
 
 
 
-            if (childValue < bestValue) {
+            if (childValue < bestValue || (Math.floor((Math.random() * 100) + 1) > 50 && childValue == bestValue)) {
                 bestValue = childValue;
                 bestL = coupsPossible[i][0];
                 bestC = coupsPossible[i][1];
