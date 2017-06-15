@@ -1,20 +1,20 @@
-const PIECE_PC = 2;
-const PIECE_HU = 1;
+const ORDINATEUR = 2;
+const HUMAIN = 1;
 
-const PROFONDEUR_ARBRE = 50;
+const PROFONDEUR_ARBRE = 10;
 
-var player = PIECE_HU;
+var player = HUMAIN;
 var plateau = [[0,0,0],[0,0,0],[0,0,0]];
 
 var coup = 0;
 
 $('.case').click(
     function() {
-        if (player == PIECE_HU) {
-            player = PIECE_PC;
+        if (player == HUMAIN) {
+            player = ORDINATEUR;
             var id = $(this).attr('id');
             $(this).css('background-color', 'red');
-            plateau[Math.trunc(id/10)][id%10] = PIECE_HU;
+            plateau[Math.trunc(id/10)][id%10] = HUMAIN;
             //console.log(evaluation(plateau));
             if (finPartie(plateau)) {
                 if (evaluation(plateau)) {
@@ -36,13 +36,13 @@ function computerPlay(p, profondeur) {
     var MAX_VALUE = 10000;
 
     coup = 0;
-    //var bestCoup = bestCoupAlphaBeta(p, profondeur, PIECE_PC, MIN_VALUE, MAX_VALUE);
+    //var bestCoup = bestCoupAlphaBeta(p, profondeur, ORDINATEUR, MIN_VALUE, MAX_VALUE);
     var bestCoup = alphaBeta(p, profondeur, MIN_VALUE, MAX_VALUE, true);
 
     var maxL = bestCoup[1];
     var maxC = bestCoup[2];
 
-    plateau[maxL][maxC] = PIECE_PC;
+    plateau[maxL][maxC] = ORDINATEUR;
     $('#'+maxL+maxC).css('background-color', 'blue');
     if (finPartie(plateau)) {
         if (evaluation(plateau)) {
@@ -51,7 +51,7 @@ function computerPlay(p, profondeur) {
             $('#info').html('Partie nulle');
         }
     } else {
-        player = PIECE_HU;
+        player = HUMAIN;
         $('#info').html('A toi de jouer');
     }
 }
@@ -91,8 +91,8 @@ function evaluation(plateau_a_evaluer) {
         var pPC = 0;
         var pHU = 0;
         for (var s = 0; s < 3; s++) {
-            pHU += plateau_a_evaluer[t][s] == PIECE_HU ? 1 : 0;
-            pPC += plateau_a_evaluer[t][s] == PIECE_PC ? 1 : 0;
+            pHU += plateau_a_evaluer[t][s] == HUMAIN ? 1 : 0;
+            pPC += plateau_a_evaluer[t][s] == ORDINATEUR ? 1 : 0;
         }
         if (pHU == 1 && !pPC) {
             nb_1_HU++;
@@ -114,8 +114,8 @@ function evaluation(plateau_a_evaluer) {
         pPC = 0;
         pHU = 0;
         for (var t = 0; t < 3; t++) {
-            pHU += plateau_a_evaluer[t][s] == PIECE_HU ? 1 : 0;
-            pPC += plateau_a_evaluer[t][s] == PIECE_PC ? 1 : 0;
+            pHU += plateau_a_evaluer[t][s] == HUMAIN ? 1 : 0;
+            pPC += plateau_a_evaluer[t][s] == ORDINATEUR ? 1 : 0;
         }
         if (pHU == 1 && !pPC) {
             nb_1_HU++;
@@ -136,8 +136,8 @@ function evaluation(plateau_a_evaluer) {
     pPC = 0;
     pHU = 0;
     for (var s = 0; s < 3; s++) {
-        pHU += plateau_a_evaluer[s][s] == PIECE_HU ? 1 : 0;
-        pPC += plateau_a_evaluer[s][s] == PIECE_PC ? 1 : 0;
+        pHU += plateau_a_evaluer[s][s] == HUMAIN ? 1 : 0;
+        pPC += plateau_a_evaluer[s][s] == ORDINATEUR ? 1 : 0;
     }
 
     if (pHU == 1 && !pPC) {
@@ -156,12 +156,12 @@ function evaluation(plateau_a_evaluer) {
 
     pPC = 0;
     pHU = 0;
-    pHU += plateau_a_evaluer[0][2] == PIECE_HU ? 1 : 0;
-    pHU += plateau_a_evaluer[1][1] == PIECE_HU ? 1 : 0;
-    pHU += plateau_a_evaluer[2][0] == PIECE_HU ? 1 : 0;
-    pPC += plateau_a_evaluer[0][2] == PIECE_PC ? 1 : 0;
-    pPC += plateau_a_evaluer[1][1] == PIECE_PC ? 1 : 0;
-    pPC += plateau_a_evaluer[2][0] == PIECE_PC ? 1 : 0;
+    pHU += plateau_a_evaluer[0][2] == HUMAIN ? 1 : 0;
+    pHU += plateau_a_evaluer[1][1] == HUMAIN ? 1 : 0;
+    pHU += plateau_a_evaluer[2][0] == HUMAIN ? 1 : 0;
+    pPC += plateau_a_evaluer[0][2] == ORDINATEUR ? 1 : 0;
+    pPC += plateau_a_evaluer[1][1] == ORDINATEUR ? 1 : 0;
+    pPC += plateau_a_evaluer[2][0] == ORDINATEUR ? 1 : 0;
     if (pHU == 1 && !pPC) {
         nb_1_HU++;
     } else if (pHU == 2 && !pPC) {
@@ -179,126 +179,6 @@ function evaluation(plateau_a_evaluer) {
     if (nb_3_HU > 0) return -1000;
     if (nb_3_PC > 0) return 1000;
     return 10*nb_1_PC + 30*nb_2_PC - 10*nb_1_HU - 30*nb_2_HU;
-}
-
-function bestCoupAlphaBeta(p, profondeur, nextPlayer, alpha, beta) {
-    var score;
-    var bestL = -1;
-    var bestC = -1;
-
-    var coupsPossible = [];
-
-    if (finPartie(p) || profondeur == 0) {
-        // console.debug('return eval');
-        return [evaluation(p), bestL, bestC];
-    }
-
-    for (var r = 0; r < 3; r++) {
-        for (var d = 0; d < 3; d++) {
-            if (p[r][d] == 0) {
-                coupsPossible.push([r, d]);
-            }
-        }
-    }
-
-    for (var c = 0; c < coupsPossible.length -1; c++) {
-        p[coupsPossible[c][0]] [coupsPossible[c][1]] = nextPlayer;
-
-        // console.debug(nextPlayer == PIECE_PC ? 'COUP PC' : 'COUP HU');
-        // debug(p);
-        if (nextPlayer == PIECE_PC) {
-            score = bestCoupAlphaBeta(p, profondeur - 1, PIECE_HU, alpha, beta)[0];
-            // console.debug('profondeur : ' + profondeur + ' -- score : ' + score);
-            if (score > alpha) {
-                console.debug('Alpha', score, coupsPossible[c][0], coupsPossible[c][1]);
-                alpha = score;
-                bestL = coupsPossible[c][0];
-                bestC = coupsPossible[c][1];
-            }
-        } else {
-            score = bestCoupAlphaBeta(p, profondeur - 1, PIECE_PC, alpha, beta)[0];
-            // console.debug('profondeur : ' + profondeur + ' -- score : ' + score);
-            if (score < beta) {
-                console.debug('Beta', score, coupsPossible[c][0], coupsPossible[c][1]);
-                beta = score;
-                bestL = coupsPossible[c][0];
-                bestC = coupsPossible[c][1];
-            }
-        }
-
-        p[coupsPossible[c][0]][coupsPossible[c][1]] = 0;
-
-        if (alpha >= beta) {
-            break;
-        }
-    }
-
-    console.debug('return player');
-    console.debug(alpha, bestL, bestC);
-    if (player == PIECE_PC) return [alpha, bestL, bestC];
-    if (player == PIECE_HU) return [beta, bestL, bestC];
-}
-
-function maxScoreCoup(p, profondeur, coupAChoisir) {
-    if (typeof coupAChoisir == 'undefined') coupAChoisir = false;
-
-    if (finPartie(p) || profondeur <= 0) {
-        return evaluation(p);
-    }
-
-    var max = -100000;
-    var r, d, tmp;
-
-    for (r = 0; r < 3; r++) {
-    for (d = 0; d < 3; d++) {
-    if (p[r][d] == 0) {
-        p[r][d] = PIECE_HU;
-        tmp = minScoreCoup(p, profondeur - 1);
-        console.debug('Profondeur : ' + profondeur);
-        debug(p);
-        console.debug(tmp);
-        if (tmp > max) {
-            max = tmp;
-            max_r = r;
-            max_d = d;
-        }
-        p[r][d] = 0;
-    }
-    }
-    }
-    if (coupAChoisir) return [max_r, max_d];
-    return max;
-}
-
-function minScoreCoup(p, profondeur, coupAChoisir) {
-    if (typeof coupAChoisir == 'undefined') coupAChoisir = false;
-
-    if (finPartie(p) || profondeur <= 0) {
-        return evaluation(p);
-    }
-
-    var min = 100000;
-    var r, d, tmp, min_r, min_d;
-
-    for (r = 0; r < 3; r++) {
-    for (d = 0; d < 3; d++) {
-    if (p[r][d] == 0) {
-        p[r][d] = PIECE_PC;
-        tmp = maxScoreCoup(p, profondeur - 1);
-        console.debug('Profondeur : ' + profondeur);
-        debug(p);
-        console.debug(tmp);
-        if (tmp < min) {
-            min = tmp;
-            min_r = r;
-            min_d = d;
-        }
-        p[r][d] = 0;
-    }
-    }
-    }
-    if (coupAChoisir) return [min_r, min_d];
-    return min;
 }
 
 function debug(p) {
@@ -330,7 +210,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
         // Recurse for all children of node.
         for (var i = 0; i < coupsPossible.length; i++) {
             var p1 = p;
-            p1[coupsPossible[i][0]][coupsPossible[i][1]] = PIECE_PC;
+            p1[coupsPossible[i][0]][coupsPossible[i][1]] = ORDINATEUR;
             var childValue = alphaBeta(p1, profondeur -1, bestValue, beta, false)[0];
 
 
@@ -353,7 +233,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
         // Recurse for all children of node.
         for (var i = 0; i < coupsPossible.length; i++) {
             var p2 = p;
-            p2[coupsPossible[i][0]][coupsPossible[i][1]] = PIECE_HU;
+            p2[coupsPossible[i][0]][coupsPossible[i][1]] = HUMAIN;
             var childValue = alphaBeta(p2, profondeur -1,alpha, bestValue, true)[0];
             //bestValue = Math.min(bestValue, childValue);
 
