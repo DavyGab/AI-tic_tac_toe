@@ -10,9 +10,9 @@ var coup = 0;
 
 $('.case').click(
     function() {
-        if (player == HUMAIN) {
+        var id = $(this).attr('id');
+        if (player == HUMAIN && plateau[Math.trunc(id/10)][id%10] == 0) {
             player = ORDINATEUR;
-            var id = $(this).attr('id');
             $(this).css('background-color', 'red');
             plateau[Math.trunc(id/10)][id%10] = HUMAIN;
             //console.log(evaluation(plateau));
@@ -215,7 +215,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
 
 
             //bestValue = Math.max(bestValue, childValue);
-            if (childValue > bestValue || (Math.floor((Math.random() * 100) + 1) > 50 && childValue == bestValue)) {
+            if (childValue > bestValue) {
                 bestValue = childValue;
                 bestL = coupsPossible[i][0];
                 bestC = coupsPossible[i][1];
@@ -239,7 +239,7 @@ function alphaBeta(p, profondeur, alpha, beta, maximisingPlayer) {
 
 
 
-            if (childValue < bestValue || (Math.floor((Math.random() * 100) + 1) > 50 && childValue == bestValue)) {
+            if (childValue < bestValue) {
                 bestValue = childValue;
                 bestL = coupsPossible[i][0];
                 bestC = coupsPossible[i][1];
